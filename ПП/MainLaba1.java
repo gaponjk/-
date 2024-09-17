@@ -6,7 +6,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 //Гапоненко Ярослав Александрович 5 группа
 //Лабараторная 1
-public class Main {
+public class MainLaba1 {
     public static long factorial(int n) {
         if (n < 0) {
             throw new IllegalArgumentException("Number must be non-negative");
