@@ -15,6 +15,7 @@ public class MainLaba2 {
     private static int length;
     private static int[][]arr;
     private static ArrayList<ArrayList<Integer>> arrayList;
+    private static Vector<Vector<Integer>> vector=new Vector<>();
     private static Random random=new Random();
 
     public static void printMatrix(int[][] arr){
@@ -57,22 +58,23 @@ public class MainLaba2 {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < length; j++) {
                 int diagonalKey = i - j;
-                diagonalSums.put(diagonalKey, diagonalSums.getOrDefault(diagonalKey, 0) + arrayList.get(i).get(j));
+                diagonalSums.put(diagonalKey, diagonalSums.getOrDefault(diagonalKey, 0) + vector.get(i).get(j));
             }
         }
         for (int sum : diagonalSums.values()) {
             maxSum = Math.max(maxSum, sum);
         }
+
         return maxSum;
     }
 
     public static int[][] task29() {
-        Integer[] indices = new Integer[arrayList.size()];
+        List<Integer> indices = new ArrayList<>(arrayList.size());
         for (int i = 0; i < arrayList.size(); i++) {
-            indices[i] = i;
+            indices.add(i);
         }
 
-        Arrays.sort(indices, new Comparator<Integer>() {
+        indices.sort(new Comparator<Integer>() {
             @Override
             public int compare(Integer a, Integer b) {
                 return Integer.compare(findMax(arrayList.get(a)), findMax(arrayList.get(b)));
@@ -80,8 +82,8 @@ public class MainLaba2 {
         });
 
         int[][] sortedMatrix = new int[arrayList.size()][];
-        for (int i = 0; i < indices.length; i++) {
-            List<Integer> row = arrayList.get(indices[i]);
+        for (int i = 0; i < indices.size(); i++) {
+            List<Integer> row = arrayList.get(indices.get(i));
             sortedMatrix[i] = row.stream().mapToInt(Integer::intValue).toArray();
         }
         return sortedMatrix;
@@ -109,12 +111,15 @@ public class MainLaba2 {
             System.out.println();
             for (int i = 0; i < width; i++) {
                 ArrayList<Integer>arrayTemp=new ArrayList<>();
+                Vector<Integer>vectorTemp=new Vector<>();
                 for (int j = 0; j < length; j++) {
                     int rand=random.nextInt(0,100);
                     arr[i][j]= rand;
                     arrayTemp.add(rand);
+                    vectorTemp.add(rand);
                 }
                 arrayList.add(arrayTemp);
+                vector.add(vectorTemp);
             }
            // arr[1][1]=0; arr[2][2]=0; ИСПОЛЬЗОВАТЬ ДЛЯ ПРОВЕРКИ ОДНОГО ИЗ УСЛОВИЙ ПЕРВОГО ЗАДАНИЯ КОГДА РАЗМЕР БОЛЬШЕ ИЛИ РАВЕН 3
             System.out.println("Изначальная матрица:");

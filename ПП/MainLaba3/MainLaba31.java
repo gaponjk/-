@@ -33,7 +33,12 @@ public class MainLaba31 {
 
              }
             System.out.println("Самые длинные слова, символы в которых идут в строгом возрастании кодов:");
-            secondWords.forEach((c)->System.out.printf(c+" "));
+             StringBuilder builder=new StringBuilder();
+            for (String secondWord:secondWords) {
+                builder.append(secondWord+" ");
+            }
+            //secondWords.forEach((c)->System.out.printf(c+" "));
+            System.out.println(builder);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
