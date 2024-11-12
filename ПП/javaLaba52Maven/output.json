@@ -1,0 +1,30 @@
+[
+    {
+        "address": "Москва, ул. Пушкина",
+        "activity": "Разработка ПО",
+        "phone": "+7 123 456 7890",
+        "dateUpdate": "2024-10-01",
+        "auditor": "Аудитор 1",
+        "link": "https://companya.com",
+        "fullName": "Компания А",
+        "dateFoundation": "2024-11-12",
+        "countEmployees": 0,
+        "shortName": "Ко А",
+        "branch": "ИТ",
+        "email": "info@companya.com"
+    },
+    {
+        "address": "Екатеринбург, ул. Крупская",
+        "activity": "Разработка ПО",
+        "phone": "+7 234 567 8901",
+        "dateUpdate": "2024-10-01",
+        "auditor": "Аудитор 3",
+        "link": "http://companyc.com",
+        "fullName": "Компания В",
+        "dateFoundation": "2010-01-10",
+        "countEmployees": 30,
+        "shortName": "Ко В",
+        "branch": "ИТ",
+        "email": "info@companyc.com"
+    }
+]

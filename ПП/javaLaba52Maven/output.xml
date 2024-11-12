@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<companyList>
+    <companies>
+        <company address="Москва, ул. Пушкина" auditor="Аудитор 1" email="info@companya.com" fullName="Компания А" link="https://companya.com" phone="+7 123 456 7890">
+            <activity>Разработка ПО</activity>
+            <branch>ИТ</branch>
+            <countEmployees>0</countEmployees>
+            <dateFoundation/>
+            <dateUpdate/>
+            <shortName>Ко А</shortName>
+        </company>
+        <company address="Екатеринбург, ул. Крупская" auditor="Аудитор 3" email="info@companyc.com" fullName="Компания В" link="http://companyc.com" phone="+7 234 567 8901">
+            <activity>Разработка ПО</activity>
+            <branch>ИТ</branch>
+            <countEmployees>30</countEmployees>
+            <dateFoundation/>
+            <dateUpdate/>
+            <shortName>Ко В</shortName>
+        </company>
+    </companies>
+</companyList>
