@@ -2,6 +2,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,8 +24,8 @@ public class FileProcessor {
     public void execute() {
         try {
             String inputData = readFromFile(inputFilePath);
-
-            String processedData = processArithmeticOperationsWithRegex(inputData);
+            inputData=processSqrt(inputData);
+            String processedData = processArithmeticOperationsWithRegex(inputData.trim());
 
             writeToFile(outputFilePath, processedData);
 
@@ -39,9 +42,24 @@ public class FileProcessor {
     private void writeToFile(String filePath, String data) throws IOException {
         Files.writeString(Path.of(filePath), data);
     }
+    //решаю все корни внутри
+    private String processSqrt(String inputData){
+        Pattern pattern = Pattern.compile("sqrt\\((\\s*\\d+(\\.\\d+)?\\s*)\\)");
+        Matcher matcher = pattern.matcher(inputData);
 
+        StringBuilder result = new StringBuilder();
+        DecimalFormat decimalFormat=new DecimalFormat("#.###");
+        while (matcher.find()) {
+            double x = Double.parseDouble(matcher.group(1));
+            double sqrtValue = Math.sqrt(x);
+            matcher.appendReplacement(result, String.valueOf(decimalFormat.format(sqrtValue)));
+        }
+
+        matcher.appendTail(result);
+        return result.toString();
+    }
     private String processArithmeticOperationsWithRegex(String data) {
-        Pattern pattern = Pattern.compile("(\\d+\\s*[+\\-*/]\\s*\\d+)");
+        Pattern pattern = Pattern.compile("(\\(\\s*)?((\\d+(\\.\\d+)?\\s*\\)*\\s*[+\\-*/]\\s*)+(\\d+(\\.\\d+)?))");
         Matcher matcher = pattern.matcher(data);
 
         StringBuilder result = new StringBuilder();
@@ -59,23 +77,92 @@ public class FileProcessor {
 
     private double evaluate(String expression) {
         expression = expression.replaceAll("\\s+", "");
-        char operator = ' ';
 
-        if (expression.contains("+")) operator = '+';
-        else if (expression.contains("-")) operator = '-';
-        else if (expression.contains("*")) operator = '*';
-        else if (expression.contains("/")) operator = '/';
+        List<String> postfix = convertToPostfix(expression);
 
-        String[] operands = expression.split("[+\\-*/]");
-        double num1 = Double.parseDouble(operands[0]);
-        double num2 = Double.parseDouble(operands[1]);
+        return evaluatePostfix(postfix);
+    }
+    //RPN
+    private List<String> convertToPostfix(String expression) {
+        Stack<Character> operators = new Stack<>();
+        List<String> output = new ArrayList<>();
+        StringBuilder number = new StringBuilder();
 
+        for (char c : expression.toCharArray()) {
+            if (Character.isDigit(c) || c == '.') {
+                number.append(c);
+            } else {
+                if (number.length() > 0) {
+                    output.add(number.toString());
+                    number.setLength(0);
+                }
+                if (c == '(') {
+                    operators.push(c);
+                } else if (c == ')') {
+                    while (!operators.isEmpty() && operators.peek() != '(') {
+                        output.add(String.valueOf(operators.pop()));
+                    }
+                    operators.pop();
+                } else if (isOperator(c)) {
+                    while (!operators.isEmpty() && precedence(operators.peek()) >= precedence(c)) {
+                        output.add(String.valueOf(operators.pop()));
+                    }
+                    operators.push(c);
+                }
+            }
+        }
+
+        if (number.length() > 0) {
+            output.add(number.toString());
+        }
+
+        while (!operators.isEmpty()) {
+            output.add(String.valueOf(operators.pop()));
+        }
+
+        return output;
+    }
+
+    private double evaluatePostfix(List<String> postfix) {
+        Stack<Double> stack = new Stack<>();
+
+        for (String token : postfix) {
+            if (isNumber(token)) {
+                stack.push(Double.parseDouble(token));
+            } else {
+                double b = stack.pop();
+                double a = stack.pop();
+                switch (token) {
+                    case "+" -> stack.push(a + b);
+                    case "-" -> stack.push(a - b);
+                    case "*" -> stack.push(a * b);
+                    case "/" -> stack.push(a / b);
+                    default -> throw new IllegalArgumentException("Unknown operator: " + token);
+                }
+            }
+        }
+
+        return stack.pop();
+    }
+
+    private boolean isNumber(String token) {
+        try {
+            Double.parseDouble(token);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private boolean isOperator(char c) {
+        return c == '+' || c == '-' || c == '*' || c == '/';
+    }
+
+    private int precedence(char operator) {
         return switch (operator) {
-            case '+' -> num1 + num2;
-            case '-' -> num1 - num2;
-            case '*' -> num1 * num2;
-            case '/' -> num1 / num2;
-            default -> throw new IllegalArgumentException("Unknown operator: " + operator);
+            case '+', '-' -> 1;
+            case '*', '/' -> 2;
+            default -> -1;
         };
     }
 
